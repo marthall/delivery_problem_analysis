@@ -66,13 +66,14 @@ def plot(dict_name, dataset, average=False):
     plt.title(dict_name)
     ax1 = fig.add_subplot(111)
     cs = colors.cnames.keys()
-    cdict = {"france": cs[0], "england": cs[1], "the_netherlands": cs[2], "switzerland": cs[3]}
+
+    cdict = {key: cs[i] for i, key in enumerate(dataset.keys())}
 
     # To avoid one series totally overwriting another
     data_array = [(key, dataset[key][i]) for key in dataset.keys() for i in range(len(dataset[key]))]
     shuffle(data_array)
 
-    for key, item in data_array[:100]:
+    for key, item in data_array:
 
         avg = np.average(np.array(item), axis=0)
 
@@ -83,7 +84,7 @@ def plot(dict_name, dataset, average=False):
         if random() < 0.00:
             ax1.plot(x, item, color=c, alpha=0.6, lw=1, label=key)
         else:
-            ax1.plot(x, item, color=c, alpha=0.5, label=key)
+            ax1.plot(x, item, color=c, alpha=0.05, label=key)
         # ax1.scatter(x, item, color=c, s=2, alpha=0.3)
 
     # Remove dulplicate labels
@@ -94,6 +95,7 @@ def plot(dict_name, dataset, average=False):
             newLabels.append(label)
             newHandles.append(handle)
     
+    # Prettify legend
     leg = plt.legend(newHandles, newLabels)
     for legobj in leg.legendHandles:
         legobj.set_linewidth(2.0)
@@ -102,10 +104,10 @@ def plot(dict_name, dataset, average=False):
     plt.savefig("output/%s.png" % dict_name)
     # plt.show()
 
-# plot("number_of_vehicles", number_of_vehicles)
+plot("number_of_vehicles", number_of_vehicles)
 plot("countries_prob_dist", countries_prob_dist)
 plot("countries_norm_dist", countries_norm_dist)
-# plot("countries", countries)
+plot("countries", countries)
 
 # print f
     # for f in filenames:
