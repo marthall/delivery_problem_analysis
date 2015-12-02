@@ -79,9 +79,10 @@ for (dirpath, dirname, filenames) in os.walk('data'):
 
 print "number of runs:", tot_runs
 
-def plot(dict_name, dataset,  title=None, xlabel=None, ylabel=None, average=False):
+def plot(dict_name, dataset, title=None, xlabel=None, ylabel=None, average=False):
     fig = plt.figure()
-    plt.title(dict_name)
+    if title:
+        plt.title(dict_name)
     ax1 = fig.add_subplot(111)
 
     # To avoid one series totally overwriting another
@@ -98,10 +99,10 @@ def plot(dict_name, dataset,  title=None, xlabel=None, ylabel=None, average=Fals
         x = np.arange(len(item)) + 1
 
         try:
-            ax1.plot(x, item, color=cm.jet(float(key)/float(max_key)), alpha=0.2, lw=1, label=key)
+            ax1.plot(x, item, color=cm.jet(float(key)/float(max_key)), alpha=0.1, lw=1, label=key)
         except ValueError:
             c = cdict[key]
-            ax1.plot(x, item, alpha=0.2, color=c, lw=1, label=key)
+            ax1.plot(x, item, alpha=0.1, color=c, lw=1, label=key)
             
 
     # Remove dulplicate labels
@@ -122,6 +123,12 @@ def plot(dict_name, dataset,  title=None, xlabel=None, ylabel=None, average=Fals
     for legobj in leg.legendHandles:
         legobj.set_linewidth(2.0)
         legobj.set_alpha(1)
+
+    if xlabel:
+        plt.xlabel(xlabel, fontsize=18)
+
+    if ylabel:
+        plt.ylabel(ylabel, fontsize=18)
 
     plt.savefig("%s/%s.png" % (RESULTS_FOLDER, dict_name))
     # plt.show()
@@ -161,11 +168,11 @@ def boxplot(datadict, name):
     plt.savefig('%s/boxplot_%s.png' % (RESULTS_FOLDER, name))
 
 plot("max_vehicle_size", max_vehicle_size)
-plot("max_vehicle_size_probdist_norm", max_vehicle_size_probdist_norm)
+plot("max_vehicle_size_probdist_norm", max_vehicle_size_probdist_norm, xlabel="Number of tasks", ylabel="Relative task cost")
 plot("max_vehicle_size_probdist_norm_size_norm", max_vehicle_size_probdist_norm_size_norm)
 plot("max_vehicle_size_probdist_norm_logsize_norm", max_vehicle_size_probdist_norm_logsize_norm)
 plot("max_vehicle_size_probdist_size_cost", max_vehicle_size_probdist_size_cost)
-plot("max_vehicle_size_probdist_size_cost_norm", max_vehicle_size_probdist_size_cost_norm)
+plot("max_vehicle_size_probdist_size_cost_norm", max_vehicle_size_probdist_size_cost_norm, xlabel="Number of tasks", ylabel="Relative task cost")
 
 plot("number_of_vehicles", number_of_vehicles)
 plot("countries_prob_dist", countries_prob_dist)
