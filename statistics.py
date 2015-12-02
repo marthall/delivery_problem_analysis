@@ -112,11 +112,7 @@ def plot(dict_name, dataset, title=None, xlabel=None, ylabel=None, average=False
 plot("number_of_vehicles", number_of_vehicles)
 plot("countries_prob_dist", countries_prob_dist)
 plot("countries_norm_dist", countries_norm_dist)
-<<<<<<< HEAD
-plot("countries", countries)
-=======
 plot("countries", countries, "Average distance for different countries", "Number of tasks", "Avg. task cost")
->>>>>>> neural-test
 
 # print f
     # for f in filenames:
