@@ -61,9 +61,9 @@ for (dirpath, dirname, filenames) in os.walk('data'):
 
 # plot avg cost compared to number of tasks
 
-def plot(dict_name, dataset, average=False):
+def plot(dict_name, dataset, title, xlabel, ylabel, average=False):
     fig = plt.figure()
-    plt.title(dict_name)
+    plt.title(title, fontsize=18)
     ax1 = fig.add_subplot(111)
     cs = colors.cnames.keys()
 
@@ -101,13 +101,16 @@ def plot(dict_name, dataset, average=False):
         legobj.set_linewidth(2.0)
         legobj.set_alpha(1)
 
+    plt.xlabel(xlabel, fontsize=18)
+    plt.ylabel(ylabel,fontsize=18)
+
     plt.savefig("output/%s.png" % dict_name)
     # plt.show()
 
-plot("number_of_vehicles", number_of_vehicles)
-plot("countries_prob_dist", countries_prob_dist)
-plot("countries_norm_dist", countries_norm_dist)
-plot("countries", countries)
+# plot("number_of_vehicles)
+plot("countries_prob_dist", countries_prob_dist, "Normalized for topology", "Number of tasks", "Relative task cost")
+# plot("countries_norm_dist", countries_norm_dist)
+plot("countries", countries, "Average distance for different countries", "Number of tasks", "Avg. task cost")
 
 # print f
     # for f in filenames:
