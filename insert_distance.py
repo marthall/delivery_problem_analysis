@@ -67,24 +67,24 @@ from pprint import pprint
 
 
 
-for (dirpath, dirname, filenames) in os.walk('results'):
+
+for (dirpath, dirname, filenames) in os.walk('same_format'):
     for fname in filenames:
         fpath = os.path.join(dirpath, fname)
 
-        country, _ = fname.split(".")
-        country = country.split("_")
-        country = "_".join(country[:-2])
+        for c in distances.keys():
+            if c in fname:
 
-        f = open(fpath)
-        j = json.load(f, encoding="latin-1")
+                f = open(fpath)
+                j = json.load(f, encoding="latin-1")
 
-        j["distance_matrix"] = distances[country]
+                j["task_distribution"]["distance_matrix"] = distances[c]
 
-        # pprint(j, indent=1)
+                # pprint(j, indent=1)
 
-        new_dir = "data"
-        new_fpath = os.path.join(new_dir, fname)
+                new_dir = "same_format2"
+                new_fpath = os.path.join(new_dir, fname)
 
-        f = open(new_fpath, "w")
+                f = open(new_fpath, "w")
 
-        json.dump(j, f, indent=1)
+                json.dump(j, f, indent=1)

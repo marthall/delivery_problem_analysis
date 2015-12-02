@@ -7,32 +7,52 @@ import numpy as np
 from random import random
 from random import shuffle
 from matplotlib import cm
+from math import log
 
 from collections import defaultdict
 
 max_vehicle_size = defaultdict(list)
+max_vehicle_size_probdist_norm = defaultdict(list)
+max_vehicle_size_probdist_norm_size_norm = defaultdict(list)
+max_vehicle_size_probdist_norm_logsize_norm = defaultdict(list)
+
+
+max_prob_dist_avg = 0
+max_distance_avg = 0
 
 for (dirpath, dirname, filenames) in os.walk('vehicle_results'):
     for f in filenames:
         fpath = os.path.join(dirpath, f)
 
-        capacities = map(int, f.split(".")[0].split("=")[1].split("_")[0].split("+"))
         # print fname
         
         with open(fpath, "r") as f:
             j = json.load(f, encoding="latin-1")
             
-            # probability_matrix = np.array(j['task_distribution']['probability_matrix'])
-            # distance_matrix = np.array(j['task_distribution']['distance_matrix'])
-            # prob_distance = np.multiply(probability_matrix, distance_matrix)
-            # prob_distance_avg = np.average(prob_distance)
-            # sum_distance = np.sum(distance_matrix)
+            probability_matrix = np.array(j['task_distribution']['probability_matrix'])
+            distance_matrix = np.array(j['task_distribution']['distance_matrix'])
+            prob_distance = np.multiply(probability_matrix, distance_matrix)
+            
+            distance_avg = np.average(distance_matrix)
+            prob_distance_avg = np.average(prob_distance)   
 
-            max_size = max(capacities)
+            if distance_avg > max_distance_avg:
+                max_distance_avg = distance_avg
+
+            if prob_distance_avg > max_prob_dist_avg:
+                max_prob_dist_avg = prob_distance_avg
 
             for run in j["runs"]:
+                max_size = max(j["vehicle_capacities"][:run["number_of_vehicles"]])
+
                 max_vehicle_size[max_size].append(run["avg_task_cost_vs_number_of_task"])
-                
+                max_vehicle_size_probdist_norm[max_size].append(run["avg_task_cost_vs_number_of_task"] / (prob_distance_avg ** 0.9))
+                max_vehicle_size_probdist_norm_size_norm[max_size].append(run["avg_task_cost_vs_number_of_task"] / (prob_distance_avg ** 0.9) * max_size**0.62)
+
+                max_vehicle_size_probdist_norm_logsize_norm[max_size].append(run["avg_task_cost_vs_number_of_task"] / (prob_distance_avg ** 0.9) * log(max_size)**1.4)
+
+print max_distance_avg
+print max_prob_dist_avg
 
 # plot avg cost compared to number of tasks
 
@@ -47,14 +67,17 @@ for (dirpath, dirname, filenames) in os.walk('vehicle_results'):
 #     plt.scatter(e[0], e[1])
 # plt.show()
 
-cost_list = []
 
-for vsize_values in max_vehicle_size.values():
-    cost_list.append(np.array(vsize_values)[:,29])
+for task_no in [10,20,30]:
 
-plt.figure()
-plt.boxplot(cost_list, positions=[5,10,15,20,25,30])
-plt.savefig("output_vehicle_size/boxplot_size_vs_average_cost_for_30_tasks.png")
+    cost_list = []
+
+    for key in sorted(max_vehicle_size):
+        cost_list.append(np.array(max_vehicle_size[key])[:,task_no-1])
+
+    plt.figure()
+    plt.boxplot(cost_list, positions=[5,10,15,20,25,30])
+    plt.savefig("output_vehicle_size/boxplot_size_vs_average_cost_for_%d_tasks.png" % task_no)
 
 
 def plot(dict_name, dataset):
@@ -86,6 +109,9 @@ def plot(dict_name, dataset):
         if label not in newLabels:
             newLabels.append(label)
             newHandles.append(handle)
+
+    # Legend order
+    newLabels, newHandles = zip(*sorted(zip(map(int, newLabels), newHandles)))
     
     leg = plt.legend(newHandles, newLabels)
     for legobj in leg.legendHandles:
@@ -96,3 +122,6 @@ def plot(dict_name, dataset):
     # plt.show()
 
 plot("max_vehicle_size", max_vehicle_size)
+plot("max_vehicle_size_probdist_norm", max_vehicle_size_probdist_norm)
+plot("max_vehicle_size_probdist_norm_size_norm", max_vehicle_size_probdist_norm_size_norm)
+plot("max_vehicle_size_probdist_norm_logsize_norm", max_vehicle_size_probdist_norm_logsize_norm)

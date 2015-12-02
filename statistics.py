@@ -61,9 +61,9 @@ for (dirpath, dirname, filenames) in os.walk('data'):
 
 # plot avg cost compared to number of tasks
 
-def plot(dict_name, dataset, average=False):
+def plot(dict_name, dataset, title=None, xlabel=None, ylabel=None, average=False):
     fig = plt.figure()
-    plt.title(dict_name)
+    plt.title(title)
     ax1 = fig.add_subplot(111)
     cs = colors.cnames.keys()
 
@@ -82,7 +82,7 @@ def plot(dict_name, dataset, average=False):
 
         x = np.arange(len(item)) + 1
         if random() < 0.00:
-            ax1.plot(x, item, color=c, alpha=0.6, lw=1, label=key)
+            ax1.plot(x, item, color="black", alpha=0.6, lw=1, label=key)
         else:
             ax1.plot(x, item, color=c, alpha=0.05, label=key)
         # ax1.scatter(x, item, color=c, s=2, alpha=0.3)
@@ -101,13 +101,22 @@ def plot(dict_name, dataset, average=False):
         legobj.set_linewidth(2.0)
         legobj.set_alpha(1)
 
+    if ylabel:
+        plt.xlabel(xlabel)
+    if ylabel:
+        plt.ylabel(ylabel)
+
     plt.savefig("output/%s.png" % dict_name)
     # plt.show()
 
 plot("number_of_vehicles", number_of_vehicles)
 plot("countries_prob_dist", countries_prob_dist)
 plot("countries_norm_dist", countries_norm_dist)
+<<<<<<< HEAD
 plot("countries", countries)
+=======
+plot("countries", countries, "Average distance for different countries", "Number of tasks", "Avg. task cost")
+>>>>>>> neural-test
 
 # print f
     # for f in filenames:
@@ -155,7 +164,7 @@ plt.figure()
 plt.plot(xdata, ydata, label="mean")
 plt.plot(xdata, minerr, label="mean - std")
 plt.plot(xdata, maxerr, label="mean + std")
-plt.plot(xdata, strategy, lw=3, ls="--", c="black", label="strategy")
+plt.plot(xdata, strategy, lw=3, ls="--", c="black"  , label="strategy")
 
 box = plt.boxplot(data)
 
