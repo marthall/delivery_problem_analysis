@@ -82,7 +82,7 @@ def plot(dict_name, dataset, average=False):
 
         x = np.arange(len(item)) + 1
         if random() < 0.00:
-            ax1.plot(x, item, color=c, alpha=0.6, lw=1, label=key)
+            ax1.plot(x, item, color="black", alpha=0.6, lw=1, label=key)
         else:
             ax1.plot(x, item, color=c, alpha=0.05, label=key)
         # ax1.scatter(x, item, color=c, s=2, alpha=0.3)
